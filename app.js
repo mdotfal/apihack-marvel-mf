@@ -1,14 +1,4 @@
-// const apiKey = "apikey=560e69d868dd8cc9ac726b016f0bfd4a";
-// const searchURL = "http://gateway.marvel.com/v1/public/characters";
-
-const publickey = '560e69d868dd8cc9ac726b016f0bfd4a';
-const privatekey = '11d97d165628713924acf9d2708a8e2c3b847a6b';
-const ts = new Date().getTime();
-const stringToHash = ts + privatekey + publickey;
-const hash = md5(stringToHash);
-const baseUrl = 'https://gateway.marvel.com:443/v1/public/characters';
-// const url = baseUrl  + '&ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
-// console.log(url);
+'use strict';
 
 function formatQueryParams ( params ) {
   const queryItems = Object.keys( params )
@@ -17,7 +7,7 @@ function formatQueryParams ( params ) {
 }
 
 function displayResults( responseJson ) {
-  console.log( responseJson );
+  // console.log( responseJson );
   for ( let i = 0; i < responseJson.data.results.length; i++ ) {
     $( '#results-list').html( 
       `
@@ -27,9 +17,21 @@ function displayResults( responseJson ) {
           <p>${responseJson.data.results[i].description}</p>
         </li>
       `
+    );
+    for ( let j = 0; j < responseJson.data.results.length; j++ ) {
+
+      $( '#js-results-comics' ).append(
+        `
+        <div class="comic-item">
+          <img src="${responseJson.data.results[i].thumbnail}.jpg">
+        </div>
+        `
       );
+    }
+
   }
   $( '#results' ).removeClass( 'hidden' );
+  $( '.results-comics' ).removeClass( 'hidden' );
 }
 
 function getSuperHero( query ) {
@@ -37,17 +39,17 @@ function getSuperHero( query ) {
     name: query
   };
 
+  const publickey = '560e69d868dd8cc9ac726b016f0bfd4a';
+  const privatekey = '11d97d165628713924acf9d2708a8e2c3b847a6b';
+  const ts = new Date().getTime();
+  const stringToHash = ts + privatekey + publickey;
+  const hash = md5(stringToHash);
+  const baseUrl = 'https://gateway.marvel.com:443/v1/public/characters';
+
   const queryString = formatQueryParams( params );
   const url = `${baseUrl}?${queryString}&apikey=${publickey}&hash=${hash}&ts=${ts}`;
-  // console.log(url);
+  console.log(url)
 
-  // let options = {
-  //   method : 'GET',
-  //   headers : {
-  //     Authorization : 'value',
-  //     'Content-type' : 'application/json'
-  //   }
-  // }
 
   fetch( url )
     .then( response => {
@@ -60,7 +62,7 @@ function getSuperHero( query ) {
     .then( responseJson => {
       $( 'results-list' ).empty();
       displayResults( responseJson );
-      $( 'error-message' ).empty();
+      // $( 'error-message' ).empty();
     })
     .catch( err => {
       $( '#js-error-message' ).text( `Something went wrong: ${err.message}` );

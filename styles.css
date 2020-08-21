@@ -31,3 +31,7 @@ input {
 .hidden {
   display: none;
 }
+
+img {
+  height: 200px;
+}
