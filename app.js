@@ -89,11 +89,14 @@ function displayVideoResults( responseVid ) {
 /**************************************************************** getSuperHero */
 function getSuperHero( query ) {
   const params = {
-    name: query
+    name: query,
+    apikey: `${publickey}`,
+    hash: `${hash}`,
+    ts: `${ts}`
   };
 
   const queryString = formatQueryParams( params );
-  const url = `${baseUrl}/characters?${queryString}&apikey=${publickey}&hash=${hash}&ts=${ts}`;
+  const url = `${baseUrl}/characters?${queryString}`;
   console.log(url)
 
 
@@ -118,11 +121,13 @@ function getSuperHero( query ) {
 /**************************************************************** getComics */
 function getComics( heroId ) {
   const params = {
-    id: heroId
+    apikey: `${publickey}`,
+    hash: `${hash}`,
+    ts: `${ts}`
   };
 
   const queryString = formatQueryParams( params );
-  const comicUrl = `${baseUrl}/characters/${heroId}/comics?apikey=${publickey}&hash=${hash}&ts=${ts}`;
+  const comicUrl = `${baseUrl}/characters/${heroId}/comics?${queryString}`;
   console.log( comicUrl );
 
   fetch( comicUrl )
