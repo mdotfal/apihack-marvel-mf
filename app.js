@@ -89,15 +89,12 @@ function getSuperHero( query ) {
 
   const queryString = formatQueryParams( params );
   const url = `${baseUrl}/characters?${queryString}`;
-  console.log(url)
-
 
   fetch( url )
     .then( response => {
       if ( response.ok ) {
         return response.json();
       }
-      
     })
     .then( responseJson => {
       $( '#js-error-message' ).empty();
@@ -154,7 +151,8 @@ function getVideos( searchTerm ) {
 
   fetch( videoUrl )
     .then( response => {
-      if ( response.ok) {
+      console.log(response)
+      if ( response.ok ) {
         return response.json();
       }
       throw new Error( "No videos found" );
