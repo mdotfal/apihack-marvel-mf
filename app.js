@@ -147,7 +147,7 @@ function getComics( heroId ) {
     })
 }
 
-/**************************************************************** getComics */
+/**************************************************************** getVideos */
 
 function getVideos( searchTerm ) {
   const params = {
@@ -159,12 +159,11 @@ function getVideos( searchTerm ) {
   }
 
   const queryString = formatQueryParams( params );
-  const ytApiKey = `AIzaSyBEGT2xQioO85IUOkvIHUXH-mwtQWQsDZI`;
   const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
   const videoUrl = `${baseUrl}?${queryString}`;
-  console.log( videoUrl, params );
+  console.log( videoUrl );
 
-  fetch( videoUrl, params )
+  fetch( videoUrl )
     .then( response => {
       if ( response.ok) {
         return response.json();
