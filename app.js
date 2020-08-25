@@ -131,7 +131,7 @@ function watchForm() {
   })
 }
 
-//  Event hander for clicking Hero Image
+//  Event handler for clicking Hero Image
 function watchImageClick() {
   $( '#results-list' ).on( 'click', '.hero-image', function( event ) {
     console.log( `watchImageClick running!` );
@@ -140,6 +140,8 @@ function watchImageClick() {
     getComics( heroId );
   })
 }
+
+/********************************************************************* INITIALIZE FUNCTION */
 
 function init() {
   $( watchForm );
