@@ -68,7 +68,7 @@ function displayVideoResults( responseVid ) {
     $( '#video-results-list').append( 
       `
         <li>
-        <a href=" https://www.youtube.com/watch?v=${responseVid.items[0].id.videoId}"><img src="${responseVid.items[i].snippet.thumbnails.high.url}"></a>
+        <a href="https://www.youtube.com/watch?v=${responseVid.items[0].id.videoId}"><img src="${responseVid.items[i].snippet.thumbnails.high.url}"></a>
         </li>
       `
     );
@@ -142,7 +142,7 @@ function getComics( heroId ) {
 function getVideos( searchTerm ) {
   const params = {
     part: "snippet",
-    key: "AIzaSyBEGT2xQioO85IUOkvIHUXH-mwtQWQsDZI",
+    key: "AIzaSyBapKVolQSgd51Ofa2cLOsNGua-95aQUH0",
     q: `marvel ${searchTerm}`,
     maxResults: 10,
     type: "video"
