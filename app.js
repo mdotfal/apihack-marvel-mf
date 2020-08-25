@@ -7,7 +7,6 @@ const stringToHash = ts + privatekey + publickey;
 const hash = md5(stringToHash);
 const baseUrl = 'https://gateway.marvel.com:443/v1/public';
 
-// format query string to find character key value pair
 function formatQueryParams ( params ) {
   const queryItems = Object.keys( params )
     .map( key => `${encodeURIComponent( key )}=${ encodeURIComponent( params[ key ] )}` )
@@ -16,16 +15,13 @@ function formatQueryParams ( params ) {
 
 /********************************************************************* GENERATE HTML */
 
-// loop through the data object for the Super Hero Characters info
+/**************************************************************** displayResults */
 function displayResults( responseJson ) {
-  //  clear comic results from previous query
   $( '#comic-results-list').empty();
   $( '#video-results-list').empty();
-  // console.log( responseJson );
   if( responseJson.data.results.length === 0){
     throw new Error("No SuperHero Found. Please try again. " );
   }
-  let comicsArray = 0;
   for ( let i = 0; i < responseJson.data.results.length; i++ ) {
     $( '#results-list').html( 
       `
@@ -42,46 +38,42 @@ function displayResults( responseJson ) {
   $( '#results' ).removeClass( 'hidden' );
 }
 
-// display comics results
+/**************************************************************** displayComicResults */
 function displayComicResults( responseObj ) {
-  console.log( 'getting comics!' );
-  // console.log( responseObj );
   if( responseObj.data.results.length === 0){
     throw new Error("No Comics Found. Please try again. " );
   }
   for ( let i = 0; i < responseObj.data.results.length; i++ ) {
-    $( '#comic-results-list').append( 
-      `
-        <li>
-        <a href="${responseObj.data.results[i].urls[0].url}"><img class="comic-image" data-comic-id="${responseObj.data.results[i].id}" 
-        src="${responseObj.data.results[i].thumbnail.path}.jpg"></a>
-        </li>
-      `
-    );
+    if (!(`${responseObj.data.results[i].thumbnail.path}`).includes("not_available")) {
+      $( '#comic-results-list').append( 
+        `
+          <li>
+          <a href="${responseObj.data.results[i].urls[0].url}"><img class="comic-image" data-comic-id="${responseObj.data.results[i].id}" 
+          src="${responseObj.data.results[i].thumbnail.path}.jpg"></a>
+          </li>
+        `
+      );
+    };
   }
   $( '#comic-results' ).removeClass( 'hidden' );
 }
 
 
-// display video results
+/**************************************************************** displayVideoResults */
 function displayVideoResults( responseVid ) {
-  console.log( 'getting videos!' );
-  console.log( responseVid );
   if( responseVid.items.length === 0){
-    throw new Error("No Videos Found. Please try again. " );
+    throw new Error("No Videos Found. Please try again.");
   }
   for ( let i = 0; i < responseVid.items.length; i++ ) {
     $( '#video-results-list').append( 
       `
         <li>
-        <img
-        src="${responseVid.items[i].snippet.thumbnails.default.url}">
+        <a href=" https://www.youtube.com/watch?v=${responseVid.items[0].id.videoId}"><img src="${responseVid.items[i].snippet.thumbnails.high.url}"></a>
         </li>
       `
     );
   }
   $( '#video-results' ).removeClass( 'hidden' );
-
 }
 
 /********************************************************************* FETCH CALLS */
@@ -105,16 +97,18 @@ function getSuperHero( query ) {
       if ( response.ok ) {
         return response.json();
       }
+      
     })
     .then( responseJson => {
-      // clear error message and search results before loading to DOM
       $( '#js-error-message' ).empty();
-      $( 'results-list' ).empty();
+      $( '#comic-results' ).addClass( 'hidden' );
+      $( '#video-results' ).addClass( 'hidden' );
       displayResults( responseJson );
     })
     .catch( err => {
       $( '#js-error-message' ).text( `${err.message}` );
-      // $( '#results-list' ).empty();
+      $( '#results-list' ).empty();
+      $( '#results' ).addClass( 'hidden' );
     });
 }
 
@@ -128,18 +122,15 @@ function getComics( heroId ) {
 
   const queryString = formatQueryParams( params );
   const comicUrl = `${baseUrl}/characters/${heroId}/comics?${queryString}`;
-  console.log( comicUrl );
 
   fetch( comicUrl )
     .then( response => {
       if ( response.ok ) {
         return response.json();
       }
-      $( 'comic-results' ).empty();
       throw new Error( "No comics found" );
     })
     .then( responseObj => {
-      $( 'comic-results' ).empty();
       displayComicResults( responseObj );
     })
     .catch( err => {
@@ -148,7 +139,6 @@ function getComics( heroId ) {
 }
 
 /**************************************************************** getVideos */
-
 function getVideos( searchTerm ) {
   const params = {
     part: "snippet",
@@ -159,20 +149,17 @@ function getVideos( searchTerm ) {
   }
 
   const queryString = formatQueryParams( params );
-  const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
-  const videoUrl = `${baseUrl}?${queryString}`;
-  console.log( videoUrl );
+  const youtubeBaseUrl = `https://www.googleapis.com/youtube/v3/search`;
+  const videoUrl = `${youtubeBaseUrl}?${queryString}`;
 
   fetch( videoUrl )
     .then( response => {
       if ( response.ok) {
         return response.json();
       }
-      $( 'video-results' ).empty();
       throw new Error( "No videos found" );
     })
     .then( responseVid => {
-      $( 'video-results' ).empty();
       displayVideoResults( responseVid );
     })
     .catch( err => {
@@ -182,20 +169,18 @@ function getVideos( searchTerm ) {
 
 /********************************************************************* EVENT LISTENERS */
 
-//  Event handler for submit button
+/**************************************************************** watchForm */
 function watchForm() {
   $( 'form' ).submit( function( event ) {
-    console.log( `watchForm running!` )
     event.preventDefault();
     const searchTerm = $( '#js-search-term' ).val();
     getSuperHero( searchTerm );
   })
 }
 
-//  Event handler for clicking Hero Image
+/**************************************************************** watchImageClick */
 function watchImageClick() {
   $( '#results-list' ).on( 'click', '.hero-image', function( event ) {
-    console.log( `watchImageClick running!` );
     const heroId = $( this ).data( 'hero-id' );
     const searchTerm = $( '#js-search-term' ).val();
     getComics( heroId );
