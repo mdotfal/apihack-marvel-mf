@@ -139,15 +139,14 @@ function getComics( heroId ) {
 function getVideos( searchTerm ) {
   const params = {
     part: "snippet",
-    key: "AIzaSyBapKVolQSgd51Ofa2cLOsNGua-95aQUH0",
+    key: "AIzaSyBHzLxoA7Hrd6d9qGPUm9YuI7hNgo8A49k",
     q: `marvel ${searchTerm}`,
-    maxResults: 10,
-    type: "video"
+    maxResults: 10
   }
 
   const queryString = formatQueryParams( params );
-  const youtubeBaseUrl = `https://www.googleapis.com/youtube/v3/search`;
-  const videoUrl = `${youtubeBaseUrl}?${queryString}`;
+  const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
+  const videoUrl = `${baseUrl}?${queryString}`;
 
   fetch( videoUrl )
     .then( response => {
