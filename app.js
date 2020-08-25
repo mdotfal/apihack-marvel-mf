@@ -18,6 +18,8 @@ function formatQueryParams ( params ) {
 
 // loop through the data object for the Super Hero Characters info
 function displayResults( responseJson ) {
+  //  clear comic results from previous query
+  $( '#comic-results-list').empty();
   console.log( responseJson );
   if( responseJson.data.results.length === 0){
     throw new Error("No SuperHero Found. Please try again. " );
@@ -50,9 +52,8 @@ function displayComicResults( responseObj ) {
     $( '#comic-results-list').append( 
       `
         <li>
-          <h3>${responseObj.data.results[i].title}</h3>
-          <a href="${responseObj.data.results[i].urls[0].url}"><img class="comic-image" data-comic-id="${responseObj.data.results[i].id}" 
-          src="${responseObj.data.results[i].thumbnail.path}.jpg"></a>
+        <a href="${responseObj.data.results[i].urls[0].url}"><img class="comic-image" data-comic-id="${responseObj.data.results[i].id}" 
+        src="${responseObj.data.results[i].thumbnail.path}.jpg"></a>
         </li>
       `
     );
@@ -106,10 +107,11 @@ function getComics( heroId ) {
       if ( response.ok ) {
         return response.json();
       }
+      $( 'comic-results' ).empty();
       throw new Error( "No comics found" );
     })
     .then( responseObj => {
-      $( 'comic-results-list' ).empty();
+      $( 'comic-results' ).empty();
       displayComicResults( responseObj );
     })
     .catch( err => {

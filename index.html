@@ -9,7 +9,7 @@
 <body>
   <div class="container">
     <h1> Marvel SuperHero Search</h1>
-
+    <!-- SuperHero search form -->
     <form id="js-form">
       <label for="search-term"></label>
       <input type="text" name="search-term" id="js-search-term" placeholder="e.g. Spider-man" required>
@@ -17,15 +17,20 @@
       <input type="submit" value="Excelsior!">
     </form>
 
+    <!-- Display Fetch Error -->
     <p id="js-error-message" class="error-message"></p>
 
+    <!-- Display Hero Results -->
     <section id="results" class="hidden">
       <h2>Search Results</h2>
       <ul id="results-list"></ul>
     </section>
 
+    <!-- Display Comics Results -->
     <section id="comic-results" class="hidden">
-      <ul id="comic-results-list"></ul>
+      <div class="comic-results-grid">
+        <ul id="comic-results-list"></ul>
+      </div>
     </section>
 
   </div>

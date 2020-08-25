@@ -35,3 +35,16 @@ input {
 img {
   height: 200px;
 }
+
+li {
+  list-style-type: none;
+}
+
+#comic-results-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#comic-results-list img {
+  padding: 10px;
+}
