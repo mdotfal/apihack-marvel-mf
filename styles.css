@@ -32,6 +32,11 @@ input {
   display: none;
 }
 
+.scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
 img {
   height: 200px;
 }
