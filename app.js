@@ -20,7 +20,8 @@ function formatQueryParams ( params ) {
 function displayResults( responseJson ) {
   //  clear comic results from previous query
   $( '#comic-results-list').empty();
-  console.log( responseJson );
+  $( '#video-results-list').empty();
+  // console.log( responseJson );
   if( responseJson.data.results.length === 0){
     throw new Error("No SuperHero Found. Please try again. " );
   }
@@ -44,7 +45,7 @@ function displayResults( responseJson ) {
 // display comics results
 function displayComicResults( responseObj ) {
   console.log( 'getting comics!' );
-  console.log( responseObj );
+  // console.log( responseObj );
   if( responseObj.data.results.length === 0){
     throw new Error("No Comics Found. Please try again. " );
   }
@@ -61,9 +62,31 @@ function displayComicResults( responseObj ) {
   $( '#comic-results' ).removeClass( 'hidden' );
 }
 
+
+// display video results
+function displayVideoResults( responseVid ) {
+  console.log( 'getting videos!' );
+  console.log( responseVid );
+  if( responseVid.items.length === 0){
+    throw new Error("No Videos Found. Please try again. " );
+  }
+  for ( let i = 0; i < responseVid.items.length; i++ ) {
+    $( '#video-results-list').append( 
+      `
+        <li>
+        <img
+        src="${responseVid.items[i].snippet.thumbnails.default.url}">
+        </li>
+      `
+    );
+  }
+  $( '#video-results' ).removeClass( 'hidden' );
+
+}
+
 /********************************************************************* FETCH CALLS */
 
-//  fetch the Super Hero data object
+/**************************************************************** getSuperHero */
 function getSuperHero( query ) {
   const params = {
     name: query
@@ -92,7 +115,7 @@ function getSuperHero( query ) {
     });
 }
 
-// fetch the Comics object
+/**************************************************************** getComics */
 function getComics( heroId ) {
   const params = {
     id: heroId
@@ -119,6 +142,40 @@ function getComics( heroId ) {
     })
 }
 
+/**************************************************************** getComics */
+
+function getVideos( searchTerm ) {
+  const params = {
+    part: "snippet",
+    key: "AIzaSyBEGT2xQioO85IUOkvIHUXH-mwtQWQsDZI",
+    q: `marvel ${searchTerm}`,
+    maxResults: 4,
+    type: "video"
+  }
+
+  const queryString = formatQueryParams( params );
+  const ytApiKey = `AIzaSyBEGT2xQioO85IUOkvIHUXH-mwtQWQsDZI`;
+  const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
+  const videoUrl = `${baseUrl}?${queryString}`;
+  console.log( videoUrl, params );
+
+  fetch( videoUrl, params )
+    .then( response => {
+      if ( response.ok) {
+        return response.json();
+      }
+      $( 'video-results' ).empty();
+      throw new Error( "No videos found" );
+    })
+    .then( responseVid => {
+      $( 'video-results' ).empty();
+      displayVideoResults( responseVid );
+    })
+    .catch( err => {
+      $( '#js-error-message' ).text( `${err.message}` );
+    })
+}
+
 /********************************************************************* EVENT LISTENERS */
 
 //  Event handler for submit button
@@ -128,6 +185,7 @@ function watchForm() {
     event.preventDefault();
     const searchTerm = $( '#js-search-term' ).val();
     getSuperHero( searchTerm );
+    getVideos( searchTerm );
   })
 }
 

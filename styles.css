@@ -36,15 +36,18 @@ img {
   height: 200px;
 }
 
+.comic-image {
+  padding: 10px;
+}
+
 li {
   list-style-type: none;
 }
 
-#comic-results-list {
+#comic-results-list, #video-results-list {
   display: flex;
-  flex-wrap: wrap;
 }
 
-#comic-results-list img {
+#comic-results-list, #video-results-list img {
   padding: 10px;
 }
