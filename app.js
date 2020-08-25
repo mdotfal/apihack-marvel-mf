@@ -31,7 +31,7 @@ function displayResults( responseJson ) {
       `
         <li>
           <h3>${responseJson.data.results[i].name}</h3>
-          <p>(Click to display comics)</p>
+          <p>(Click to display comics & videos)</p>
           <img class="hero-image" data-hero-id="${responseJson.data.results[i].id}" 
           src="${responseJson.data.results[i].thumbnail.path}.jpg">
           <p>${responseJson.data.results[i].description}</p>
@@ -149,7 +149,7 @@ function getVideos( searchTerm ) {
     part: "snippet",
     key: "AIzaSyBEGT2xQioO85IUOkvIHUXH-mwtQWQsDZI",
     q: `marvel ${searchTerm}`,
-    maxResults: 4,
+    maxResults: 10,
     type: "video"
   }
 
@@ -185,7 +185,6 @@ function watchForm() {
     event.preventDefault();
     const searchTerm = $( '#js-search-term' ).val();
     getSuperHero( searchTerm );
-    getVideos( searchTerm );
   })
 }
 
@@ -194,8 +193,9 @@ function watchImageClick() {
   $( '#results-list' ).on( 'click', '.hero-image', function( event ) {
     console.log( `watchImageClick running!` );
     const heroId = $( this ).data( 'hero-id' );
-    console.log( heroId );
+    const searchTerm = $( '#js-search-term' ).val();
     getComics( heroId );
+    getVideos( searchTerm );
   })
 }
 
