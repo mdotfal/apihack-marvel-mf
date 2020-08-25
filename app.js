@@ -7,11 +7,14 @@ const stringToHash = ts + privatekey + publickey;
 const hash = md5(stringToHash);
 const baseUrl = 'https://gateway.marvel.com:443/v1/public';
 
+// format query string to find character key value pair
 function formatQueryParams ( params ) {
   const queryItems = Object.keys( params )
     .map( key => `${encodeURIComponent( key )}=${ encodeURIComponent( params[ key ] )}` )
   return queryItems.join( '&' ); 
 }
+
+/********************************************************************* GENERATE HTML */
 
 // loop through the data object for the Super Hero Characters info
 function displayResults( responseJson ) {
@@ -19,11 +22,13 @@ function displayResults( responseJson ) {
   if( responseJson.data.results.length === 0){
     throw new Error("No SuperHero Found. Please try again. " );
   }
+  let comicsArray = 0;
   for ( let i = 0; i < responseJson.data.results.length; i++ ) {
     $( '#results-list').html( 
       `
         <li>
           <h3>${responseJson.data.results[i].name}</h3>
+          <p>(Click to display comics)</p>
           <img class="hero-image" data-hero-id="${responseJson.data.results[i].id}" 
           src="${responseJson.data.results[i].thumbnail.path}.jpg">
           <p>${responseJson.data.results[i].description}</p>
@@ -36,8 +41,26 @@ function displayResults( responseJson ) {
 
 // display comics results
 function displayComicResults( responseObj ) {
+  console.log( 'getting comics!' );
   console.log( responseObj );
+  if( responseObj.data.results.length === 0){
+    throw new Error("No Comics Found. Please try again. " );
+  }
+  for ( let i = 0; i < responseObj.data.results.length; i++ ) {
+    $( '#comic-results-list').append( 
+      `
+        <li>
+          <h3>${responseObj.data.results[i].title}</h3>
+          <a href="${responseObj.data.results[i].urls[0].url}"><img class="comic-image" data-comic-id="${responseObj.data.results[i].id}" 
+          src="${responseObj.data.results[i].thumbnail.path}.jpg"></a>
+        </li>
+      `
+    );
+  }
+  $( '#comic-results' ).removeClass( 'hidden' );
 }
+
+/********************************************************************* FETCH CALLS */
 
 //  fetch the Super Hero data object
 function getSuperHero( query ) {
@@ -75,8 +98,8 @@ function getComics( heroId ) {
   };
 
   const queryString = formatQueryParams( params );
-  const comicUrl = `${baseUrl}/${heroId}/comics?format=comic&${queryString}&apikey=${publickey}&hash=${hash}&ts=${ts}`;
-  // console.log( comicUrl );
+  const comicUrl = `${baseUrl}/characters/${heroId}/comics?apikey=${publickey}&hash=${hash}&ts=${ts}`;
+  console.log( comicUrl );
 
   fetch( comicUrl )
     .then( response => {
@@ -86,6 +109,7 @@ function getComics( heroId ) {
       throw new Error( "No comics found" );
     })
     .then( responseObj => {
+      $( 'comic-results-list' ).empty();
       displayComicResults( responseObj );
     })
     .catch( err => {
@@ -115,6 +139,9 @@ function watchImageClick() {
   })
 }
 
+function init() {
+  $( watchForm );
+  $( watchImageClick );
+} 
 
-$( watchForm );
-$( watchImageClick );
+$( init );
