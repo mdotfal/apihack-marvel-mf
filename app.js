@@ -139,7 +139,7 @@ function getComics( heroId ) {
 function getVideos( searchTerm ) {
   const params = {
     part: "snippet",
-    key: "AIzaSyBHzLxoA7Hrd6d9qGPUm9YuI7hNgo8A49k",
+    key: "AIzaSyC3EYAPdSJEuk0ThnQnXeIBRYyZR-3LCRs",
     q: `marvel ${searchTerm}`,
     maxResults: 10
   }
