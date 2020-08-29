@@ -65,16 +65,18 @@ function displayComicResults( responseObj ) {
 function displayModal( responseJson ) {
   console.log( responseJson );
 
-  // for ( let i = 0; i > responseJson.data.results.length; i++ ) {
+  for ( let i = 0; i < responseJson.data.results.length; i++ ) {
     $( '#modal-results' ).html( `
       <div id ="modal" class="modal">
         <div class="modal-content">
           <div class="modal-header">
             <span class="close-btn">&times;</span>
-            <h2>Hero Title</h2>
+            <h2>${responseJson.data.results[i].title}</h2>
           </div> 
           <div class="modal-body">
-            <p>desc</p>
+            <img class="comic-image" data-comic-id="${responseJson.data.results[i].id}" 
+            src="${responseJson.data.results[i].thumbnail.path}.jpg">
+            <p>${responseJson.data.results[0].description}</p>
             <button>view comics</button>
           </div>
           <div class="modal-footer">
@@ -83,7 +85,10 @@ function displayModal( responseJson ) {
         </div>
       </div>
     `);
-  // }
+  }
+
+
+  console.log('1');
   
 }
 
