@@ -32,21 +32,34 @@ input {
   display: none;
 }
 
+h3 {
+  width: 20rem;
+}
+
+#results-list {
+  display: flex;
+  flex-direction: row;
+}
+
 .scroll {
   overflow-x: auto;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 img {
   height: 200px;
 }
 
-.comic-image {
+.hero-image, .comic-image {
   padding: 10px;
 }
 
 li {
   list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 #comic-results-list, #video-results-list {
@@ -55,4 +68,49 @@ li {
 
 #comic-results-list, #video-results-list img {
   padding: 10px;
+}
+
+/* MODAL */
+
+.modal {
+  /* display: none; */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.modal-content {
+  margin: 10% auto;
+  width: 30em;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
+}
+
+.modal-body {
+  padding: 10px 20px;
+  background: #fff;
+}
+
+.modal-header {
+  background: rgb(145, 145, 145);
+  padding: 15px;
+  color: #fff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.modal-footer {
+  background: rgb(145, 145, 145);
+  padding: 15px;
+  color: #fff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.close {
+  display: none;
 }

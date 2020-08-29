@@ -17,27 +17,29 @@ function formatQueryParams ( params ) {
 
 /**************************************************************** displayResults */
 function displayResults( responseJson ) {
+  // $( '.hero-list-item' ).empty();
   $( '#comic-results-list').empty();
   $( '#video-results-list').empty();
   if( responseJson.data.results.length === 0){
     throw new Error("No SuperHero Found. Please try again. " );
   }
   for ( let i = 0; i < responseJson.data.results.length; i++ ) {
-    $( '#results-list').html( 
-      `
-        <li>
-          <h3>${responseJson.data.results[i].name}</h3>
-          <p>(Click to display comics & videos)</p>
-          <img class="hero-image" data-hero-id="${responseJson.data.results[i].id}" 
-          src="${responseJson.data.results[i].thumbnail.path}.jpg">
-          <p>${responseJson.data.results[i].description}</p>
-        </li>
-      `
-    );
+    if (!(`${responseJson.data.results[i].thumbnail.path}`).includes("not_available") && (`${responseJson.data.results[i].stories.available}` > 1)) {
+      $( '#results-list').append( 
+        `
+          <li class="hero-list-item">
+            <h3>${responseJson.data.results[i].name}</h3>
+            <img class="hero-image" data-hero-id="${responseJson.data.results[i].id}" 
+            src="${responseJson.data.results[i].thumbnail.path}.jpg">
+            
+          </li>
+        `
+      );
+    }
   }
   $( '#results' ).removeClass( 'hidden' );
 }
-
+{/* <p>${responseJson.data.results[i].description}</p> */}
 /**************************************************************** displayComicResults */
 function displayComicResults( responseObj ) {
   if( responseObj.data.results.length === 0){
@@ -58,30 +60,53 @@ function displayComicResults( responseObj ) {
   $( '#comic-results' ).removeClass( 'hidden' );
 }
 
+/**************************************************************** displayModal */
+
+function displayModal() {
+  $( '#modal-results' ).html( `
+    <div id ="modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close-btn">&times;</span>
+          <h2>Hero Title</h2>
+        </div> 
+        <div class="modal-body">
+          <p>thumbnail</p>
+          <p>description</p>
+          <button>view comics</button>
+        </div>
+        <div class="modal-footer">
+          <p>more comics</p>
+        </div>
+      </div>
+    </div>
+  `);
+  
+}
 
 /**************************************************************** displayVideoResults */
-function displayVideoResults( responseVid ) {
-  if( responseVid.items.length === 0){
-    throw new Error("No Videos Found. Please try again.");
-  }
-  for ( let i = 0; i < responseVid.items.length; i++ ) {
-    $( '#video-results-list').append( 
-      `
-        <li>
-        <a href="https://www.youtube.com/watch?v=${responseVid.items[0].id.videoId}"><img src="${responseVid.items[i].snippet.thumbnails.high.url}"></a>
-        </li>
-      `
-    );
-  }
-  $( '#video-results' ).removeClass( 'hidden' );
-}
+// function displayVideoResults( responseVid ) {
+//   if( responseVid.items.length === 0){
+//     throw new Error("No Videos Found. Please try again.");
+//   }
+//   for ( let i = 0; i < responseVid.items.length; i++ ) {
+//     $( '#video-results-list').append( 
+//       `
+//         <li>
+//         <a href="https://www.youtube.com/watch?v=${responseVid.items[0].id.videoId}"><img src="${responseVid.items[i].snippet.thumbnails.high.url}"></a>
+//         </li>
+//       `
+//     );
+//   }
+//   $( '#video-results' ).removeClass( 'hidden' );
+// }
 
 /********************************************************************* FETCH CALLS */
 
 /**************************************************************** getSuperHero */
 function getSuperHero( query ) {
   const params = {
-    name: query,
+    nameStartsWith: query,
     apikey: `${publickey}`,
     hash: `${hash}`,
     ts: `${ts}`
@@ -97,14 +122,15 @@ function getSuperHero( query ) {
       }
     })
     .then( responseJson => {
+      console.log(responseJson)
       $( '#js-error-message' ).empty();
+      $( '#results-list' ).empty();
       $( '#comic-results' ).addClass( 'hidden' );
       $( '#video-results' ).addClass( 'hidden' );
       displayResults( responseJson );
     })
     .catch( err => {
       $( '#js-error-message' ).text( `${err.message}` );
-      $( '#results-list' ).empty();
       $( '#results' ).addClass( 'hidden' );
     });
 }
@@ -128,7 +154,11 @@ function getComics( heroId ) {
       throw new Error( "No comics found" );
     })
     .then( responseObj => {
-      displayComicResults( responseObj );
+      console.log( responseObj )
+      $( '#comic-results-list' ).empty();
+      // $( '#js-error-message' ).empty();
+      displayModal();
+      // displayComicResults( responseObj );
     })
     .catch( err => {
       $( '#js-error-message' ).text( `${err.message}` );
@@ -136,33 +166,33 @@ function getComics( heroId ) {
 }
 
 /**************************************************************** getVideos */
-function getVideos( searchTerm ) {
-  const params = {
-    part: "snippet",
-    key: "AIzaSyC3EYAPdSJEuk0ThnQnXeIBRYyZR-3LCRs",
-    q: `marvel ${searchTerm}`,
-    maxResults: 10
-  }
+// function getVideos( searchTerm ) {
+//   const params = {
+//     part: "snippet",
+//     key: "AIzaSyC3EYAPdSJEuk0ThnQnXeIBRYyZR-3LCRs",
+//     q: `marvel ${searchTerm}`,
+//     maxResults: 10
+//   }
 
-  const queryString = formatQueryParams( params );
-  const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
-  const videoUrl = `${baseUrl}?${queryString}`;
+//   const queryString = formatQueryParams( params );
+//   const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
+//   const videoUrl = `${baseUrl}?${queryString}`;
 
-  fetch( videoUrl )
-    .then( response => {
-      console.log(response)
-      if ( response.ok ) {
-        return response.json();
-      }
-      throw new Error( "No videos found" );
-    })
-    .then( responseVid => {
-      displayVideoResults( responseVid );
-    })
-    .catch( err => {
-      $( '#js-error-message' ).text( `${err.message}` );
-    })
-}
+//   fetch( videoUrl )
+//     .then( response => {
+//       console.log(response)
+//       if ( response.ok ) {
+//         return response.json();
+//       }
+//       throw new Error( "No videos found" );
+//     })
+//     .then( responseVid => {
+//       displayVideoResults( responseVid );
+//     })
+//     .catch( err => {
+//       $( '#js-error-message' ).text( `${err.message}` );
+//     })
+// }
 
 /********************************************************************* EVENT LISTENERS */
 
@@ -181,8 +211,21 @@ function watchImageClick() {
     const heroId = $( this ).data( 'hero-id' );
     const searchTerm = $( '#js-search-term' ).val();
     getComics( heroId );
-    getVideos( searchTerm );
+    // getVideos( searchTerm );
   })
+}
+
+/**************************************************************** watchCloseClick */
+function watchCloseClick() {
+  $( '#modal-results' ).on( 'click', '.close-btn',function( event ) {
+    $( '.modal' ).addClass( 'close' );
+  })
+}
+
+function outsideClick( event ) {
+  if ( event.currentTarget == this ) {
+    $( '.modal' ).addClass( 'close' );
+  }
 }
 
 /********************************************************************* INITIALIZE FUNCTION */
@@ -190,6 +233,8 @@ function watchImageClick() {
 function init() {
   $( watchForm );
   $( watchImageClick );
+  $( watchCloseClick );
+  $( outsideClick );
 } 
 
 $( init );
