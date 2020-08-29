@@ -7,16 +7,28 @@ body {
 }
 
 button, input[type="text"] {
-  padding: 5px;
-}
-
-button:hover {
-  cursor: pointer;
+  padding: 2px;
 }
 
 input {
   margin-right: 20px;
   width: 200px;
+}
+
+h3 {
+  width: 20rem;
+}
+
+img {
+  height: 200px;
+}
+
+li {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .container {
@@ -32,10 +44,6 @@ input {
   display: none;
 }
 
-h3 {
-  width: 20rem;
-}
-
 #results-list {
   display: flex;
   flex-direction: row;
@@ -46,20 +54,8 @@ h3 {
   overflow-y: hidden;
 }
 
-img {
-  height: 200px;
-}
-
 .hero-image, .comic-image {
   padding: 10px;
-}
-
-li {
-  list-style-type: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
 #comic-results-list, #video-results-list {
@@ -107,10 +103,10 @@ li {
   background: rgb(145, 145, 145);
   padding: 15px;
   color: #fff;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
-.close {
-  display: none;
+.close-btn:hover {
+  cursor: pointer;
 }

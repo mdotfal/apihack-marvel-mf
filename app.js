@@ -62,25 +62,28 @@ function displayComicResults( responseObj ) {
 
 /**************************************************************** displayModal */
 
-function displayModal() {
-  $( '#modal-results' ).html( `
-    <div id ="modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <span class="close-btn">&times;</span>
-          <h2>Hero Title</h2>
-        </div> 
-        <div class="modal-body">
-          <p>thumbnail</p>
-          <p>description</p>
-          <button>view comics</button>
-        </div>
-        <div class="modal-footer">
-          <p>more comics</p>
+function displayModal( responseJson ) {
+  console.log( responseJson );
+
+  // for ( let i = 0; i > responseJson.data.results.length; i++ ) {
+    $( '#modal-results' ).html( `
+      <div id ="modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span class="close-btn">&times;</span>
+            <h2>Hero Title</h2>
+          </div> 
+          <div class="modal-body">
+            <p>desc</p>
+            <button>view comics</button>
+          </div>
+          <div class="modal-footer">
+            <p>more comics</p>
+          </div>
         </div>
       </div>
-    </div>
-  `);
+    `);
+  // }
   
 }
 
@@ -122,7 +125,7 @@ function getSuperHero( query ) {
       }
     })
     .then( responseJson => {
-      console.log(responseJson)
+      // console.log(responseJson)
       $( '#js-error-message' ).empty();
       $( '#results-list' ).empty();
       $( '#comic-results' ).addClass( 'hidden' );
@@ -154,10 +157,10 @@ function getComics( heroId ) {
       throw new Error( "No comics found" );
     })
     .then( responseObj => {
-      console.log( responseObj )
+      // console.log( responseObj )
       $( '#comic-results-list' ).empty();
       // $( '#js-error-message' ).empty();
-      displayModal();
+      displayModal( responseObj );
       // displayComicResults( responseObj );
     })
     .catch( err => {
@@ -218,14 +221,8 @@ function watchImageClick() {
 /**************************************************************** watchCloseClick */
 function watchCloseClick() {
   $( '#modal-results' ).on( 'click', '.close-btn',function( event ) {
-    $( '.modal' ).addClass( 'close' );
+    $( '.modal' ).addClass( 'hidden' );
   })
-}
-
-function outsideClick( event ) {
-  if ( event.currentTarget == this ) {
-    $( '.modal' ).addClass( 'close' );
-  }
 }
 
 /********************************************************************* INITIALIZE FUNCTION */
@@ -234,7 +231,6 @@ function init() {
   $( watchForm );
   $( watchImageClick );
   $( watchCloseClick );
-  $( outsideClick );
 } 
 
 $( init );
