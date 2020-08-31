@@ -4,48 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>API Hack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1> Marvel SuperHero Search</h1>
+    <a href="#"><img class="logo-img" src="../img/marvel-logo.png"></a>
+    <h1>SuperHero Search</h1>
     <!-- SuperHero search form -->
-    <form id="js-form">
-      <label for="search-term"></label>
-      <input type="text" name="search-term" id="js-search-term" placeholder="e.g. Spider-man" required>
-
-      <input type="submit" value="Excelsior!">
-    </form>
-
+    <div class="search-from">
+      <form id="js-form">
+        <label for="search-term"></label>
+        <input type="text" name="search-term" id="js-search-term" placeholder="e.g. Black Panther" required>
+        <br>
+        <input type="submit" value="Excelsior!" class="submit-btn">
+    </div>
+  
     <!-- Display Fetch Error -->
     <p id="js-error-message" class="error-message"></p>
 
-    <!-- Display Hero Results -->
-    <section id="results" class="hidden">
-      <h2>Search Results</h2>
-      <p>(Click to display comics & videos)</p>
-      <div class="results-grid scroll">
-        <ul id="results-list"></ul>
-      </div>
-    </section>
+    <!-- <div class="results-container "> -->
 
-    <!-- Display Comics Results -->
-    <section id="comic-results" class="hidden">
-      <h2>Comics</h2>
-      <div class="comic-results-grid scroll">
-        <ul id="comic-results-list"></ul>
-      </div>
-    </section>
-
-    <section id="modal-results"></section>
-
-    <!-- Display Video Results
-    <section id="video-results" class="hidden">
-      <h2>Videos</h2>
-      <div class="video-results-grid scroll">
+      <!-- Display Hero Results -->
+      <section id="results" class="hidden">
+        <h2>SuperHero Select</h2>
+        <p>(Click to display comics)</p>
+        <div class="results-grid">
+          <ul id="results-list"></ul>
+        </div>
+      </section>
+  
+      <!-- Display Comics Results -->
+      <section id="modal-results"></section>
+  
+      <!-- Display Video Results -->
+      <section id="video-results" class="hidden">
         <ul id="video-results-list"></ul>
-      </div>
-    </section> -->
+      </section>
+
+    <!-- </div> -->
 
   </div>
 

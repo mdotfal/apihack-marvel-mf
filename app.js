@@ -7,17 +7,21 @@ const stringToHash = ts + privatekey + publickey;
 const hash = md5(stringToHash);
 const baseUrl = 'https://gateway.marvel.com:443/v1/public';
 
-function formatQueryParams ( params ) {
-  const queryItems = Object.keys( params )
-    .map( key => `${encodeURIComponent( key )}=${ encodeURIComponent( params[ key ] )}` )
-  return queryItems.join( '&' ); 
-}
+let results = [];
+let currentResultViewed = 0;
+
 
 /********************************************************************* GENERATE HTML */
 
+/**************************************************************** formatQueryParams */
+  function formatQueryParams ( params ) {
+    const queryItems = Object.keys( params )
+      .map( key => `${encodeURIComponent( key )}=${ encodeURIComponent( params[ key ] )}` )
+    return queryItems.join( '&' ); 
+  }
+
 /**************************************************************** displayResults */
 function displayResults( responseJson ) {
-  // $( '.hero-list-item' ).empty();
   $( '#comic-results-list').empty();
   $( '#video-results-list').empty();
   if( responseJson.data.results.length === 0){
@@ -39,75 +43,57 @@ function displayResults( responseJson ) {
   }
   $( '#results' ).removeClass( 'hidden' );
 }
-{/* <p>${responseJson.data.results[i].description}</p> */}
-/**************************************************************** displayComicResults */
-function displayComicResults( responseObj ) {
-  if( responseObj.data.results.length === 0){
-    throw new Error("No Comics Found. Please try again. " );
-  }
-  for ( let i = 0; i < responseObj.data.results.length; i++ ) {
-    if (!(`${responseObj.data.results[i].thumbnail.path}`).includes("not_available")) {
-      $( '#comic-results-list').append( 
-        `
-          <li>
-          <a href="${responseObj.data.results[i].urls[0].url}"><img class="comic-image" data-comic-id="${responseObj.data.results[i].id}" 
-          src="${responseObj.data.results[i].thumbnail.path}.jpg"></a>
-          </li>
-        `
-      );
-    };
-  }
-  $( '#comic-results' ).removeClass( 'hidden' );
-}
 
 /**************************************************************** displayModal */
 
 function displayModal( responseJson ) {
-  console.log( responseJson );
-
-  for ( let i = 0; i < responseJson.data.results.length; i++ ) {
-    $( '#modal-results' ).html( `
-      <div id ="modal" class="modal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <span class="close-btn">&times;</span>
-            <h2>${responseJson.data.results[i].title}</h2>
-          </div> 
-          <div class="modal-body">
-            <img class="comic-image" data-comic-id="${responseJson.data.results[i].id}" 
-            src="${responseJson.data.results[i].thumbnail.path}.jpg">
-            <p>${responseJson.data.results[0].description}</p>
-            <button>view comics</button>
-          </div>
-          <div class="modal-footer">
-            <p>more comics</p>
+  if ( responseJson ) {
+    responseJson.data.results.forEach(result => results.push(result))
+  }
+  for ( let i = 0; i < results.length; i++ ) {
+    if ( currentResultViewed === results.length - 1) {
+      currentResultViewed = 0;
+    }
+    if (!(`${results[currentResultViewed].thumbnail.path}`).includes("not_available")) {
+      $( '#modal-results' ).html( `
+        <div id ="modal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span class="close-btn">&times;</span>
+              <h3 class="modal-heading">${results[currentResultViewed].title}</h3>
+            </div> 
+            <div class="modal-body">
+              <img class="comic-image center" data-comic-id="${results[currentResultViewed].id}" 
+              src="${results[currentResultViewed].thumbnail.path}.jpg">
+            </div>
+            <div class="modal-footer">
+              <span class="previous-comic-btn btn">&#8678;</span>
+              <button class="video-btn">View Video</button>
+              <span class="next-comic-btn btn">&#8680;</span>
+            </div>
           </div>
         </div>
-      </div>
-    `);
+      `);
+    }
   }
-
-
-  console.log('1');
-  
 }
 
 /**************************************************************** displayVideoResults */
-// function displayVideoResults( responseVid ) {
-//   if( responseVid.items.length === 0){
-//     throw new Error("No Videos Found. Please try again.");
-//   }
-//   for ( let i = 0; i < responseVid.items.length; i++ ) {
-//     $( '#video-results-list').append( 
-//       `
-//         <li>
-//         <a href="https://www.youtube.com/watch?v=${responseVid.items[0].id.videoId}"><img src="${responseVid.items[i].snippet.thumbnails.high.url}"></a>
-//         </li>
-//       `
-//     );
-//   }
-//   $( '#video-results' ).removeClass( 'hidden' );
-// }
+function displayVideoResults( responseVid ) {
+  if( responseVid.items.length === 0){
+    throw new Error("No Videos Found. Please try again.");
+  }
+  for ( let i = 0; i < responseVid.items.length; i++ ) {
+    $( '#video-results-list' ).append( 
+      `
+        <li>
+        <a href="https://www.youtube.com/watch?v=${responseVid.items[0].id.videoId}"><img class="video-image" src="${responseVid.items[i].snippet.thumbnails.high.url}"></a>
+        </li>
+      `
+    );
+  }
+  $( '#video-results' ).removeClass( 'hidden' );
+}
 
 /********************************************************************* FETCH CALLS */
 
@@ -130,7 +116,6 @@ function getSuperHero( query ) {
       }
     })
     .then( responseJson => {
-      // console.log(responseJson)
       $( '#js-error-message' ).empty();
       $( '#results-list' ).empty();
       $( '#comic-results' ).addClass( 'hidden' );
@@ -162,11 +147,9 @@ function getComics( heroId ) {
       throw new Error( "No comics found" );
     })
     .then( responseObj => {
-      // console.log( responseObj )
       $( '#comic-results-list' ).empty();
-      // $( '#js-error-message' ).empty();
+      $( '#video-results-list' ).empty();
       displayModal( responseObj );
-      // displayComicResults( responseObj );
     })
     .catch( err => {
       $( '#js-error-message' ).text( `${err.message}` );
@@ -174,33 +157,32 @@ function getComics( heroId ) {
 }
 
 /**************************************************************** getVideos */
-// function getVideos( searchTerm ) {
-//   const params = {
-//     part: "snippet",
-//     key: "AIzaSyC3EYAPdSJEuk0ThnQnXeIBRYyZR-3LCRs",
-//     q: `marvel ${searchTerm}`,
-//     maxResults: 10
-//   }
+function getVideos( searchTerm ) {
+  const params = {
+    part: "snippet",
+    key: "AIzaSyDrinht3l55mZR90NNEne-IgGTN2zUHlqE",
+    q: `marvel ${searchTerm}`,
+    maxResults: 5
+  }
 
-//   const queryString = formatQueryParams( params );
-//   const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
-//   const videoUrl = `${baseUrl}?${queryString}`;
+  const queryString = formatQueryParams( params );
+  const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
+  const videoUrl = `${baseUrl}?${queryString}`;
 
-//   fetch( videoUrl )
-//     .then( response => {
-//       console.log(response)
-//       if ( response.ok ) {
-//         return response.json();
-//       }
-//       throw new Error( "No videos found" );
-//     })
-//     .then( responseVid => {
-//       displayVideoResults( responseVid );
-//     })
-//     .catch( err => {
-//       $( '#js-error-message' ).text( `${err.message}` );
-//     })
-// }
+  fetch( videoUrl )
+    .then( response => {
+      if ( response.ok ) {
+        return response.json();
+      }
+      throw new Error( "No videos found" );
+    })
+    .then( responseVid => {
+      displayVideoResults( responseVid );
+    })
+    .catch( err => {
+      $( '#js-error-message' ).text( `${err.message}` );
+    })
+}
 
 /********************************************************************* EVENT LISTENERS */
 
@@ -217,25 +199,71 @@ function watchForm() {
 function watchImageClick() {
   $( '#results-list' ).on( 'click', '.hero-image', function( event ) {
     const heroId = $( this ).data( 'hero-id' );
-    const searchTerm = $( '#js-search-term' ).val();
     getComics( heroId );
-    // getVideos( searchTerm );
+    currentResultViewed = 0;
+    results = [];
+  })
+}
+
+/**************************************************************** watchVideoClick */
+function watchVideoClick() {
+  $( '#modal-results' ).on( 'click', '.video-btn', function( event ) {
+    $( '.modal' ).addClass( 'hidden' );
+    const searchTerm = $( '#js-search-term' ).val();
+    getVideos( searchTerm );
   })
 }
 
 /**************************************************************** watchCloseClick */
 function watchCloseClick() {
-  $( '#modal-results' ).on( 'click', '.close-btn',function( event ) {
+  $( '#modal-results' ).on( 'click', '.close-btn', function( event ) {
     $( '.modal' ).addClass( 'hidden' );
+    currentResultViewed = 0;
+    results = [];
   })
 }
+
+/**************************************************************** watchNextClick */
+function watchNextClick() {
+  $( 'body' ).on( 'click', '.next-comic-btn', function( event ) {
+    if ( currentResultViewed < results.length ) {
+      currentResultViewed++;
+      displayModal();
+    } else {
+      currentResultViewed = 0;
+    }
+  })
+}
+
+/**************************************************************** watchPreviousClick */
+function watchPreviousClick() {
+  $( 'body' ).on( 'click', '.previous-comic-btn', function( event ) {
+    if ( currentResultViewed < results.length ) {
+      currentResultViewed--;
+      displayModal();
+    } else {
+      currentResultViewed = 0;
+    }
+  })
+}
+
+function watchReloadPage() {
+  $( 'body' ).on( 'click', '.logo-img', function( event ) {
+    location.reload( true );
+  })
+}
+ 
 
 /********************************************************************* INITIALIZE FUNCTION */
 
 function init() {
   $( watchForm );
   $( watchImageClick );
+  $( watchVideoClick );
   $( watchCloseClick );
+  $( watchNextClick );
+  $( watchPreviousClick );
+  $( watchReloadPage );
 } 
 
 $( init );

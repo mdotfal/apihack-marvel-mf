@@ -2,25 +2,107 @@
   box-sizing: border-box;
 }
 
+*::placeholder {
+  /* modern browser */
+  color: lightgrey;
+}
+
 body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: 'Roboto', sans-serif;
+  margin: 0;
+  height: 100vh;
 }
 
-button, input[type="text"] {
-  padding: 2px;
-}
-
-input {
-  margin-right: 20px;
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  text-align: center;
   width: 200px;
 }
 
-h3 {
-  width: 20rem;
+.logo-img {
+  height: 100px;
 }
 
-img {
-  height: 200px;
+h1, h2, h3 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 900;
+  text-transform: uppercase;
+  width: 300px;
+  padding: 0;
+}
+
+h2 {
+  margin: auto;
+}
+
+button, input[type="text"] {
+  font-family: 'Roboto', sans-serif;
+  border: 0;
+  border-bottom: 2px solid #735706;
+  padding: 2px;
+  width: 60vw;
+  margin: auto;
+  text-align: center;
+  font-weight: 300;
+  font-size: 24px;
+}
+
+input {
+  margin: 20px 50px;
+  width: 200px;
+}
+
+.submit-btn, .video-btn {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 21px;
+  text-transform: uppercase;
+  font-style: italic;
+  border-top: 0;
+  border-left: 0;
+  background: white;
+  width: 60vw;
+}
+
+#results {
+  /* display: flex; */
+  flex-direction: column;
+  align-items: center;
+}
+
+/* .results-container {
+  flex-direction: row;
+} */
+
+.results-grid {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-image {
+  height: 14em;
+}
+
+.comic-image {
+  height: 25em;
+}
+
+.video-image {
+  height: 12em;
+  padding: 10px;
+}
+
+.center {
+  text-align: center;
 }
 
 li {
@@ -31,39 +113,55 @@ li {
   text-align: center;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
 .error-message {
-    color: red;
+  color: red;
 }
 
 .hidden {
   display: none;
 }
 
+#results, #video-results {
+  width: 80vw;
+}
+
 #results-list {
   display: flex;
   flex-direction: row;
+  overflow: hidden;
+  overflow-x: scroll;
 }
 
-.scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
+#results > p {
+  margin-bottom: 0;
+  font-size: .85em;
+  font-style: italic;
+}
+
+
+.hero-list-item > h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 100;
 }
 
 .hero-image, .comic-image {
   padding: 10px;
+
 }
 
-#comic-results-list, #video-results-list {
+/* #video-results-grid {
   display: flex;
-}
+  flex-direction: row;
+  overflow: hidden;
+  overflow-x: scroll;
+} */
 
-#comic-results-list, #video-results-list img {
-  padding: 10px;
+#video-results-list {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  overflow-x: scroll;
 }
 
 /* MODAL */
@@ -77,12 +175,12 @@ li {
   height: 100%;
   width: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, .85);
 }
 
 .modal-content {
   margin: 10% auto;
-  width: 30em;
+  width: 20em;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
 }
 
@@ -92,21 +190,56 @@ li {
 }
 
 .modal-header {
-  background: rgb(145, 145, 145);
-  padding: 15px;
+  background: #180e59;
+  padding: 10px;
   color: #fff;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
 
-.modal-footer {
-  background: rgb(145, 145, 145);
-  padding: 15px;
-  color: #fff;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+.modal-heading {
+  font-weight: 300;
+  font-size: 20px;
+}
+
+.close-btn {
+  float: right;
+  font-size: 2em;
+  padding: 0 .25em .5em .5em;
 }
 
 .close-btn:hover {
   cursor: pointer;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  background: #180e59;
+  padding: 10px;
+  color: #fff;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  text-align: center;
+}
+
+.modal-footer > span {
+  text-align: center;
+  padding: 10px;
+}
+
+.btn:hover {
+  cursor: pointer;
+}
+
+@media all and (min-width: 800px) {
+
+  .logo-img {
+    height: 200px;
+  }
+
+  button, input[type="text"], .submit-btn, .video-btn {
+    width: 50vw;
+  }
+
 }
