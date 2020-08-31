@@ -162,7 +162,7 @@ function getVideos( searchTerm ) {
     part: "snippet",
     key: "AIzaSyDrinht3l55mZR90NNEne-IgGTN2zUHlqE",
     q: `marvel ${searchTerm}`,
-    maxResults: 5
+    maxResults: 8
   }
 
   const queryString = formatQueryParams( params );
