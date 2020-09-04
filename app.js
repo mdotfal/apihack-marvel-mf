@@ -45,7 +45,6 @@ function displayResults( responseJson ) {
 }
 
 /**************************************************************** displayModal */
-
 function displayModal( responseJson ) {
   if ( responseJson ) {
     responseJson.data.results.forEach(result => results.push(result))
@@ -160,7 +159,7 @@ function getComics( heroId ) {
 function getVideos( searchTerm ) {
   const params = {
     part: "snippet",
-    key: "AIzaSyDrinht3l55mZR90NNEne-IgGTN2zUHlqE",
+    key: "AIzaSyC4o9NPMy-mW8qkWWHgM_FOlBrOScIuHgs",
     q: `marvel ${searchTerm}`,
     maxResults: 8
   }
